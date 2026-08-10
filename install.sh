@@ -19,7 +19,7 @@ BIN_DIR="$HOME/.local/bin"
 PLUGIN_DIR="$HOME/.local/lib/ladspa"
 CONFIG_DIR="$HOME/.config/noisecancel-fedora"
 DESKTOP_DIR="$HOME/.local/share/applications"
-ICON_DIR="$HOME/.local/share/icons/hicolor/256x256/apps"
+ICON_DIR="$HOME/.local/share/icons/hicolor/scalable/apps"
 
 # Pinned to a specific, verified release (not "latest") so the checksum
 # below always matches what gets downloaded — protects against a corrupted
@@ -104,7 +104,11 @@ info "Installing app files to $APP_DIR"
 mkdir -p "$APP_DIR" "$BIN_DIR" "$CONFIG_DIR" "$DESKTOP_DIR" "$ICON_DIR"
 
 cp "$SCRIPT_DIR/noise_cancel.py" "$APP_DIR/noise_cancel.py"
-cp "$SCRIPT_DIR/icon.svg" "$ICON_DIR/noisecancel-fedora.svg" 2>/dev/null || true
+if [ -f "$SCRIPT_DIR/icon.svg" ]; then
+    cp "$SCRIPT_DIR/icon.svg" "$ICON_DIR/noisecancel-fedora.svg"
+else
+    warn "icon.svg not found in $SCRIPT_DIR, skipping icon copy."
+fi
 
 echo "$PLUGIN_SO" > "$CONFIG_DIR/plugin_path.txt"
 
