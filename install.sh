@@ -19,7 +19,8 @@ BIN_DIR="$HOME/.local/bin"
 PLUGIN_DIR="$HOME/.local/lib/ladspa"
 CONFIG_DIR="$HOME/.config/noisecancel-fedora"
 DESKTOP_DIR="$HOME/.local/share/applications"
-ICON_DIR="$HOME/.local/share/icons/hicolor/scalable/apps"
+ICON_THEME_DIR="$HOME/.local/share/icons/hicolor"
+ICON_DIR="$ICON_THEME_DIR/scalable/apps"
 
 # Pinned to a specific, verified release (not "latest") so the checksum
 # below always matches what gets downloaded — protects against a corrupted
@@ -112,10 +113,6 @@ fi
 
 echo "$PLUGIN_SO" > "$CONFIG_DIR/plugin_path.txt"
 
-# Any leftover config from an older version of this app that embedded the
-# filter directly in the main PipeWire daemon is cleaned up automatically
-# by noise_cancel.py itself the next time it runs — nothing to do here.
-
 cat > "$BIN_DIR/noisecancel-fedora" <<EOF
 #!/usr/bin/env bash
 exec python3 "$APP_DIR/noise_cancel.py" "\$@"
@@ -134,8 +131,19 @@ Categories=AudioVideo;Audio;Utility;
 StartupNotify=true
 EOF
 
+# ---------------------------------------------------------------------------
+# 4. Refresh Desktop & Icon Caches
+# ---------------------------------------------------------------------------
+touch --no-create "$ICON_THEME_DIR" "$DESKTOP_DIR" 2>/dev/null || true
 update-desktop-database "$DESKTOP_DIR" >/dev/null 2>&1 || true
-gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" >/dev/null 2>&1 || true
+
+# -t ignores missing index.theme, -f forces cache rebuild, -q stays quiet
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t -q "$ICON_THEME_DIR" >/dev/null 2>&1 || true
+fi
+if command -v gtk4-update-icon-cache >/dev/null 2>&1; then
+    gtk4-update-icon-cache -f -t -q "$ICON_THEME_DIR" >/dev/null 2>&1 || true
+fi
 
 # Make sure $HOME/.local/bin is on PATH (usually already is on Fedora)
 case ":$PATH:" in
