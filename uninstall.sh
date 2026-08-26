@@ -34,5 +34,19 @@ rm -f "$HOME_DIR/.local/share/icons/hicolor/scalable/apps/noisecancel-fedora.svg
 rm -f "$HOME_DIR/.config/autostart/noisecancel-fedora.desktop"
 rm -rf "$CONFIG_DIR"
 
+# Refresh desktop and icon cache immediately
+DESKTOP_DIR="$HOME_DIR/.local/share/applications"
+ICON_THEME_DIR="$HOME_DIR/.local/share/icons/hicolor"
+
+touch --no-create "$ICON_THEME_DIR" "$DESKTOP_DIR" 2>/dev/null || true
+update-desktop-database "$DESKTOP_DIR" >/dev/null 2>&1 || true
+
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t -q "$ICON_THEME_DIR" >/dev/null 2>&1 || true
+fi
+if command -v gtk4-update-icon-cache >/dev/null 2>&1; then
+    gtk4-update-icon-cache -f -t -q "$ICON_THEME_DIR" >/dev/null 2>&1 || true
+fi
+
 echo "[*] (Kept: the RNNoise plugin at ~/.local/lib/ladspa — harmless to leave, delete manually if you want.)"
 echo "[OK] Noise Cancel removed."
