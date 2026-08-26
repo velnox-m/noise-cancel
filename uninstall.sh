@@ -30,7 +30,7 @@ echo "[*] Removing app files..."
 rm -rf "$HOME_DIR/.local/share/noisecancel-fedora"
 rm -f "$HOME_DIR/.local/bin/noisecancel-fedora"
 rm -f "$HOME_DIR/.local/share/applications/noisecancel-fedora.desktop"
-rm -f "$HOME_DIR/.local/share/icons/hicolor/256x256/apps/noisecancel-fedora.svg"
+rm -f "$HOME_DIR/.local/share/icons/hicolor/scalable/apps/noisecancel-fedora.svg"
 rm -f "$HOME_DIR/.config/autostart/noisecancel-fedora.desktop"
 rm -rf "$CONFIG_DIR"
 
